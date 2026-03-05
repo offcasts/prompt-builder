@@ -174,6 +174,7 @@ export default function App() {
   // Breakpoints
   const isMobile = width < 500;
   const isTablet = width < 768;
+  const isWide   = width >= 1100;
 
   const [step, setStep]               = useState(1);
   const [model, setModel]             = useState(null);
@@ -203,11 +204,12 @@ export default function App() {
   const C          = "#f0a500";
 
   // ── Responsive derived values ──
-  const modelCols     = isMobile ? "1fr" : "1fr 1fr";
-  const purposeCols   = isMobile ? "1fr 1fr" : isTablet ? "repeat(3, 1fr)" : "repeat(3, 1fr)";
-  const fwCols        = isMobile ? "1fr" : isTablet ? "1fr 1fr" : "repeat(auto-fill, minmax(268px, 1fr))";
+  const modelCols     = isMobile ? "1fr" : isWide ? "repeat(4, 1fr)" : "1fr 1fr";
+  const purposeCols   = isMobile ? "1fr 1fr" : isWide ? "repeat(6, 1fr)" : "repeat(3, 1fr)";
+  const fwCols        = isMobile ? "1fr" : isTablet ? "1fr 1fr" : isWide ? "repeat(4, 1fr)" : "repeat(auto-fill, minmax(268px, 1fr))";
   const headerPad     = isMobile ? "36px 16px 20px" : "44px 24px 26px";
-  const contentPad    = isMobile ? "24px 16px" : "34px 24px";
+  const contentPad    = isMobile ? "24px 16px" : isWide ? "40px 48px" : "34px 24px";
+  const maxW          = isMobile ? "100%" : isWide ? "1400px" : "760px";
   const btnRowDir     = isMobile ? "column" : "row";
   const stepLabelShow = !isMobile;
 
@@ -293,15 +295,16 @@ export default function App() {
       </div>
 
       {/* ── Main Content ── */}
-      <div style={{ maxWidth: 760, margin: "0 auto", padding: contentPad, position: "relative", zIndex: 1 }} key={animKey} className="anim">
+      <div style={{ maxWidth: maxW, margin: "0 auto", padding: contentPad, position: "relative", zIndex: 1 }} key={animKey} className="anim">
 
         {/* ── STEP 1 ── */}
         {step === 1 && (
           <>
             <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C, fontStyle: "italic", marginBottom: 14 }}>01 — Select your AI model</div>
 
+            <div style={{ display: "grid", gridTemplateColumns: isWide ? "1fr 1fr" : "1fr", gap: 0 }}>
             {VENDOR_GROUPS.map(({ vendor, ids }) => (
-              <div key={vendor}>
+              <div key={vendor} style={{ paddingRight: isWide ? 16 : 0 }}>
                 <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#3a3a5a", fontStyle: "italic", marginBottom: 8, marginTop: 18 }}>{vendor}</div>
                 <div style={{ display: "grid", gridTemplateColumns: modelCols, gap: 9 }}>
                   {ids.map(id => {
@@ -321,6 +324,7 @@ export default function App() {
                 </div>
               </div>
             ))}
+            </div>
 
             <div style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.05)", margin: "24px 0" }} />
             <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C, fontStyle: "italic", marginBottom: 14 }}>02 — Select your purpose</div>
